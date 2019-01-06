@@ -1,24 +1,27 @@
 <!--第一步基本信息-->
 <template>
   <div class="f_app">
-    <steper></steper>
+    <div class="order_title">
+      行驶证信息
+    </div>
     <f_form></f_form>
+    <foot-nav></foot-nav>
   </div>
 </template>
 
 <script>
-  import steper from '../common/steper'
   import f_form from '../appointment/app_form'
+  import footNav from '../../components/common/foot'
     export default {
         name: "app_msg",
       components:{
-          steper,
-          f_form
+          f_form,
+          footNav
       },
   created() {
     let userInfo = JSON.parse(localStorage.getItem('USER'));
-		
-		console.log("userInfo:" + userInfo)
+
+		console.log("userInfo:" + userInfo);
 
     if (userInfo != ''&&userInfo != undefined) {
       //认证登录状态
@@ -31,12 +34,16 @@
         localStorage.clear();
         this.$router.push({name: 'login'})
       }
-			
+
     }
   }
     }
 </script>
 
 <style scoped>
-
+  .order_title {
+    line-height: 60px;
+    text-align: center;
+    background-color: #dddddd;
+  }
 </style>

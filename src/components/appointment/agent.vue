@@ -1,41 +1,46 @@
 <template>
-
   <div class="get_agent">
-    <!--<mu-container>
-    <mu-form :model="form" class="mu-demo-form" label-position="left" label-width="100">
-      <mu-form-item prop="select" label="Select">
-        <mu-select v-model="form.select">
-          <mu-option v-for="(ids,item) in address" @change="addressChange" :label="ids" :value="ids"></mu-option>
-        </mu-select>
-      </mu-form-item>
-      <mu-form-item prop="select" label="Select">
-        <mu-select v-model="form.select1">
-          <mu-option v-for="option,index in options" :key="option" :label="option" :value="option"></mu-option>
-        </mu-select>
-      </mu-form-item>
-    </mu-form>
-  </mu-container>-->
-    <div class="demo-picker-container">
-      <mu-slide-picker :slots="addressSlots" :visible-item-count="7" @change="addressChange" :values="address"></mu-slide-picker>
-      <p>
-        您选择的城市是： {{addressProvince}} {{addressCity}}
-      </p>
-    </div>
-    <div class="agent_list">
-      <div class="agent_cell" v-for="(item,ids) in data" :key="ids">
-        <div class="box" >
-          <p class="name">{{item.agentAddress}}</p>
-          <p>代理商所在地:{{item.agentCity}}<span class="tel">代理商电话:{{item.agentCall}}</span></p>
-          <span class="col-md-3">5座车服务费用：￥{{item.smallPrice}}</span>
-          <span class="col-md-3">7座车服务费用：￥{{item.bigPrice}}</span>
-          <span class="col-md-3">运营车费用：￥{{item.operatePrice}}</span>
-        </div>
-        <div class="appoint" :id="item.agentId" @click="agent">
-          立即预约
+      <mu-container>
+      <!-- <mu-form :model="form" class="mu-demo-form" label-position="left" label-width="100">
+        <mu-form-item prop="select" label="Select">
+          <mu-select v-model="form.select">
+            <mu-option v-for="(ids,item) in address" @change="addressChange" :label="ids" :value="ids"></mu-option>
+          </mu-select>
+        </mu-form-item>
+        <mu-form-item prop="select" label="Select">
+          <mu-select v-model="form.select1">
+            <mu-option v-for="option,index in options" :key="option" :label="option" :value="option"></mu-option>
+          </mu-select>
+        </mu-form-item>
+      </mu-form> -->
+			<mu-dialog title="提示信息" width="360" :open.sync="openSimple">
+				{{msg}}
+				<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
+			</mu-dialog>
+    </mu-container>
+      <div class="demo-picker-container">
+        <mu-slide-picker :slots="addressSlots" :visible-item-count="7" @change="addressChange" :values="address"></mu-slide-picker>
+        <p>
+          您选择的城市是： {{addressProvince}} {{addressCity}}
+        </p>
+      </div>
+      <div class="agent_list">
+        <div class="agent_cell" v-for="(item,ids) in data" :key="ids">
+          <div class="box" >
+            <p class="name">{{item.agentAddress}}</p>
+            <p>代理商所在地:{{item.agentCity}}<span class="tel">代理商电话:{{item.agentCall}}</span></p>
+            <span class="col-md-3">5座车服务费用：￥{{item.smallPrice}}</span>
+            <span class="col-md-3">7座车服务费用：￥{{item.bigPrice}}</span>
+            <span class="col-md-3">运营车费用：￥{{item.operatePrice}}</span>
+          </div>
+          <div class="appoint" :id="item.agentId" @click="agent">
+            立即预约
+          </div>
         </div>
       </div>
     </div>
-  </div>
+
+
 
 </template>
 
@@ -77,86 +82,105 @@
     '台湾': ['台北市', '高雄市', '台北县', '桃园县', '新竹县', '苗栗县', '台中县', '彰化县', '南投县', '云林县', '嘉义县', '台南县', '高雄县', '屏东县', '宜兰县', '花莲县', '台东县', '澎湖县', '基隆市', '新竹市', '台中市', '嘉义市', '台南市']
   }
     export default {
-        name: "agent",
-      data () {
-        return {
-          addressSlots: [
-            {
-              width: '100%',
-              textAlign: 'right',
-              values: Object.keys(address)
-            }, {
-              width: '100%',
-              textAlign: 'left',
-              values: ['北京']
-            }
-          ],
-          data:[],
-          form: {
-            select: '',
-            select1: ''
-          },
-          address: ['北京', '北京'],
-          addressProvince: '北京',
-          addressCity: '北京'
-        }
-      },
-      methods: {
-        addressChange (value, index) {
-          switch (index) {
-            case 0:
-              this.addressProvince = value;
-              const arr = address[value];
-              this.addressSlots[1].values = arr;
-              this.addressCity = arr[0];
-              break;
-            case 1:
-              this.addressCity = value;
-              break
-          }
-          this.address = [this.addressProvince, this.addressCity];
-          this.$ajax.get("/check-car/app/check/agent/all", {
-          }).then((res)=> {
-            if (res.data.code ==200){
-              this.data = res.data.data;
-            }
-          });
-        },
-        agent(e){
-          let id = e.target.getAttribute('id')
-          this.$router.push({name:'app_msg_s',query:{agentId:id}})
-        }
-      },
-      created(){
-        this.$ajax.get("/check-car/app/check/agent/all", {
-        }).then((res)=> {
-          if (res.data.code ==200){
-            this.data = res.data.data;
-          }
-        });
-      }
-    }
-</script>
+            name: "agent",
+          data () {
+            return {
 
-<style scoped>
-.agent_cell p{
-  margin: 0;
-}
-.agent_cell{
-  padding: 5px 10px;
-  background-color: #b4b4b4;
-  margin-bottom: 10px;
-}
-.name{
-  font-size: 18px;
-}
-.tel{
-  margin-left: 15px;
-}
-.appoint{
-  width: 60px;
-  line-height: 30px;
-  background-color: #00bcd4;
-  color: #fafafa;
-}
-</style>
+              addressSlots: [
+                {
+                  width: '100%',
+                  textAlign: 'right',
+                  values: Object.keys(address)
+                }, {
+                  width: '100%',
+                  textAlign: 'left',
+                  values: ['北京']
+                }
+              ],
+              data:[],
+              form: {
+                select: '',
+                select1: ''
+              },
+              address: ['北京', '北京'],
+              addressProvince: '北京',
+              addressCity: '北京',
+							openSimple: false,
+							msg: ''
+            }
+          },
+          methods: {
+            addressChange (value, index) {
+              switch (index) {
+                case 0:
+                  this.addressProvince = value;
+                  const arr = address[value];
+                  this.addressSlots[1].values = arr;
+                  this.addressCity = arr[0];
+                  break;
+                case 1:
+                  this.addressCity = value;
+                  break
+              }
+              this.address = [this.addressProvince, this.addressCity];
+              this.$ajax.get("/check-car/app/check/agent/all?province="+this.addressProvince+"&city="+this.addressCity, {
+              }).then((res)=> {
+								console.log(res)
+                if (res.data.code ==200){
+                  this.data = res.data.data;
+									if(res.data.data.length == 0){
+										this.msg='该区域暂无代理商'
+										this.openSimple = true
+									}
+                }
+              });
+            },
+            agent(e){
+              let id = e.target.getAttribute('id')
+              this.$router.push({name:'app_msg_s',query:{agentId:id}})
+            },
+						closeSimpleDialog () {
+							this.openSimple = false;
+						},
+          },
+          created(){
+            this.$ajax.get("/check-car/app/check/user/getUserInfo", {
+            }).then((res)=> {
+              if (res.data.code ==200){
+
+              }else{
+                this.$router.push({name: 'app_msg',query:{type:1}})
+              }
+            });
+            this.$ajax.get("/check-car/app/check/agent/all", {
+            }).then((res)=> {
+              if (res.data.code ==200){
+                this.data = res.data.data;
+              }
+            });
+          }
+        }
+    </script>
+
+    <style scoped>
+    .agent_cell p{
+      margin: 0;
+    }
+    .agent_cell{
+      padding: 5px 10px;
+      background-color: #b4b4b4;
+      margin-bottom: 10px;
+    }
+    .name{
+      font-size: 18px;
+    }
+    .tel{
+      margin-left: 15px;
+    }
+    .appoint{
+      width: 60px;
+      line-height: 30px;
+      background-color: #00bcd4;
+      color: #fafafa;
+    }
+    </style>

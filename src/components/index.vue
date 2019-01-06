@@ -17,9 +17,9 @@
           <span>车检服务</span>
         </div>
         <div class="main_cell_body">
-          <router-link class="appointment" :to="{name:'app_msg'}">
+          <router-link class="appointment" :to="{name:'agent'}">
             <div class="head_pic">
-              <img src="../../static/images/car.png" alt="">
+              <img src="/static/images/car.png" alt="">
             </div>
             <div class="pic_msg">
               <p>在线预约 </p>
@@ -29,7 +29,7 @@
           <!--:to="{name:'index'}"-->
           <div class="appointment" @click="replace">
             <div class="head_pic">
-              <img src="../../static/images/people.png" alt="">
+              <img src="/static/images/people.png" alt="">
             </div>
             <div class="pic_msg">
               <p>代驾预约 </p>
@@ -47,19 +47,19 @@
             年检需要准备些什么？
           </div>
           <div class="need">
-            <p><img src="../../static/images/circle.png" alt=""><span>机动车行驶证件(正、副本)</span></p>
-            <p><img src="../../static/images/circle.png" alt=""><span>车主身份证或居住证原件(或代理人身份证原件)</span></p>
-            <p><img src="../../static/images/circle.png" alt=""><span>有效期内的交强险副本原件(含车船税、挂车提供车船税)</span></p>
-            <p><img src="../../static/images/circle.png" alt=""><span>单位车辆需要提供单位出具的委托书(需单位公章)</span></p>
-            <p><img src="../../static/images/circle.png" alt=""><span>三角警示牌</span></p>
+            <p><img src="/static/images/circle.png" alt=""><span>机动车行驶证件(正、副本)</span></p>
+            <p><img src="/static/images/circle.png" alt=""><span>车主身份证或居住证原件(或代理人身份证原件)</span></p>
+            <p><img src="/static/images/circle.png" alt=""><span>有效期内的交强险副本原件(含车船税、挂车提供车船税)</span></p>
+            <p><img src="/static/images/circle.png" alt=""><span>单位车辆需要提供单位出具的委托书(需单位公章)</span></p>
+            <p><img src="/static/images/circle.png" alt=""><span>三角警示牌</span></p>
           </div>
           <div class="prepare">
             那些车需要年检？
           </div>
           <div class="need">
-            <p><img src="../../static/images/circle.png" alt=""><span>注册登记日期超过6年的私家车(6年后1年一检)</span></p>
-            <p><img src="../../static/images/circle.png" alt=""><span>面包车、7座及7座以上车辆(前6年每2年一检，6年后1年一检)</span></p>
-            <p><img src="../../static/images/circle.png" alt=""><span>营运车辆(前5年每1年一检，第6年起每半年一检)</span></p>
+            <p><img src="/static/images/circle.png" alt=""><span>注册登记日期超过6年的私家车(6年后1年一检)</span></p>
+            <p><img src="/static/images/circle.png" alt=""><span>面包车、7座及7座以上车辆(前6年每2年一检，6年后1年一检)</span></p>
+            <p><img src="/static/images/circle.png" alt=""><span>营运车辆(前5年每1年一检，第6年起每半年一检)</span></p>
           </div>
         </div>
       </div>
@@ -95,15 +95,15 @@
               </div>
               <div class="lrbody mas_ul">
                 <ul>
-                  <li><img src="../../static/images/xd.png" alt="">在线下单</li>
+                  <li><img src="/static/images/xd.png" alt="">在线下单</li>
                   <li class="left_dashed"></li>
-                  <li><img src="../../static/images/clgl.png" alt="">自驾/代驾</li>
+                  <li><img src="/static/images/clgl.png" alt="">自驾/代驾</li>
                   <li class="left_dashed"></li>
-                  <li><img src="../../static/images/nianjian.png" alt="">到站年检</li>
+                  <li><img src="/static/images/nianjian.png" alt="">到站年检</li>
                   <li class="left_dashed"></li>
-                  <li><img src="../../static/images/jiaojie.png" alt="">交接还车</li>
+                  <li><img src="/static/images/jiaojie.png" alt="">交接还车</li>
                   <li class="left_dashed"></li>
-                  <li><img src="../../static/images/jiesu.png" alt="">年检结束</li>
+                  <li><img src="/static/images/jiesu.png" alt="">年检结束</li>
                 </ul>
               </div>
             </div>

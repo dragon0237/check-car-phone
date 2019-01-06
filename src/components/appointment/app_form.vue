@@ -22,24 +22,20 @@
       <mu-form-item prop="date" label="车辆注册日期">
         <mu-date-input v-model="form.registerDate" container="dialog" :disabled="isReadonly"  full-width></mu-date-input>
       </mu-form-item>
-			<mu-flex align-items="center" style="padding-bottom: 8px;">
+			<mu-flex align-items="center" :disabled="isReadonly" style="padding-bottom: 8px;">
 				<span style="margin-right: 16px;">是否为运营车:</span>
 				<mu-radio v-model="operateCar" style="margin-right: 16px;" checked value="1" label="是" ></mu-radio>
 				<mu-radio v-model="operateCar" style="margin-right: 16px;" value="0" label="否" ></mu-radio>
 			</mu-flex>
       <mu-circular-progress v-if="this.loading" class="loading demo-circular-progress" :size="36"></mu-circular-progress>
-			<!--<mu-button class="editBtn" round color="success" v-if="isReadonly" @click="editInfo">修改</mu-button>-->
-			<mu-button class="nextBtn" @click="to_next" color="primary">下一步</mu-button>
+			<mu-button class="editBtn" round color="success" v-if="isReadonly" @click="editInfo">修改</mu-button>
+			<mu-button class="nextBtn" @click="to_next" v-if="!isReadonly" color="primary">保存</mu-button>
 
     </mu-form>
-    <div class="suporse">
-      技术支持：北京道火自然科技
-    </div>
     <mu-dialog title="提示信息" width="360" :open.sync="openSimple">
       {{msg}}
       <mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
     </mu-dialog>
-
   </mu-container>
 
 
@@ -90,18 +86,14 @@
 				}
 			},
       methods: {
-
-				editInfo(){
-					this.isReadonly = !this.isReadonly
-				},
+        editInfo(){
+          this.isReadonly = false
+        },
 				// 驾驶证校验
 				isLicensePlate(str) {
 					return /^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$/.test(str)
 				},
         to_next(){
-					if(this.isReadonly){
-						this.$router.push({name:'agent'})
-					}
           this.$ajax.post("/check-car/app/check/user/addUserCar", {
             "carType": this.form.carType == '五座汽车'?5:7,
             "plateNum": this.form.plateNum,
@@ -111,8 +103,12 @@
             "operateCar": this.operateCar
           }).then((res)=> {
             if (res.data.code ==200){
-              this.$router.push({name:'agent'})
+              if (this.$route.query.type == 1){
+                this.$router.push({name:'agent'});
+              }
+              this.isReadonly = true;
             }else if (res.data.code == 500){
+              this.isReadonly = false;
               this.openSimple = true;
               this.msg = res.data.msg
             }
@@ -129,7 +125,6 @@
           this.$ajax.post('/check-car/app/check/uploadCarPic',param)
             .then((res)=>{
               if(res.data.code == 200){
-                console.log(res);
                 this.isUploadImg=true;
 								this.refresh_img=false;
 								this.refresh_img=true;
@@ -142,7 +137,7 @@
                       this.form.plateNum = res.data.carInfo.plateNum;
                       this.form.vinId = res.data.carInfo.vin;
                       this.form.registerDate = res.data.carInfo.registerDate;
-                      this.headpic = 'http://129.204.110.142:8080/check-car/app/sms/showCarPic/'+res.data.carInfo.userId;
+                      this.headpic = 'http://129.204.110.142:8080/check-car/app/sms/showCarPic/'+res.data.carInfo.userId+'/'+res.data.carInfo.plateNum;
                       this.operateCar = JSON.stringify(res.data.carInfo.operateCar);
                       // this.isReadonly=true;
                       this.isUploadImg=true;
@@ -158,10 +153,21 @@
                 this.msg = res.data.msg;
               }
             })
-        },
-
-
-
+        }
+      },
+      created(){
+        this.$ajax.get("/check-car/app/check/user/getCarInfo", {
+        }).then((res)=> {
+          if (res.data.code ==200){
+            this.isReadonly = true;
+            this.form.carType = res.data.carInfo.carType==5?'五座汽车':'七座汽车';
+            this.form.plateNum = res.data.carInfo.plateNum;
+            this.form.vinId = res.data.carInfo.vin;
+            this.form.registerDate = res.data.carInfo.registerDate;
+            this.headpic = 'http://129.204.110.142:8080/check-car/app/sms/showCarPic/'+res.data.carInfo.userId+'/'+res.data.carInfo.plateNum;
+            this.operateCar = JSON.stringify(res.data.carInfo.operateCar);
+          }
+        });
       }
     }
 </script>
@@ -172,15 +178,8 @@
   height: 10rem;
   /* background-color: #ffa2c4; */
 }
-.upload_pic{
-	width: 20%;
-	height: 20%;
-	margin-left: 41%;
-	margin-top: 20%;
-	/* text-align: center; */
 
-}
-.upload_pic2{
+.upload_pic{
 	width: 100%;
 	height: 100%;
 }

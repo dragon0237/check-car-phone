@@ -158,7 +158,7 @@
     height: 7rem;
     border-radius: 50%;
     position: absolute;
-    /*background-color: red;*/
+    background-color: red;
   }
   .imageFileInput img{
     width: 100%;

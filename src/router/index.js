@@ -6,9 +6,12 @@ import login from '../components/reg_log/login'
 import server_process from '../components/server_process'
 import order from '../components/order/order'
 import order_list from '../components/order/order_list'
+import history_list from '../components/order/history_list'
 import check_car from '../components/order/check_car'
 import evaluate from '../components/order/evaluate'
 import agent from '../components/appointment/agent'
+import mine from '../components/mine/mine'
+import me_msg from '../components/mine/me_msg'
 import charge from '../components/appointment/charge'
 import app_msg from '../components/appointment/app_msg'
 import app_msg_s from '../components/appointment/app_msg_s'
@@ -26,6 +29,7 @@ Vue.use(Router);
 
 // 数据请求
 import Axios from 'axios'
+// 129.204.110.142
 Axios.defaults.baseURL = 'http://129.204.110.142:8080';
 // Axios.defaults.baseURL = '/api';
 Vue.prototype.$ajax = Axios;
@@ -100,6 +104,11 @@ export default new Router({
       component: order_list
     },
     {
+      path: '/history_list',
+      name: 'history_list',
+      component: history_list
+    },
+    {
       path: '/check_car',
       name: 'check_car',
       component: check_car
@@ -123,6 +132,16 @@ export default new Router({
       path: '/charge',
       name: 'charge',
       component: charge
+    },
+    {
+      path: '/mine/mine',
+      name: 'mine',
+      component: mine
+    },
+    {
+      path: '/mine/me_msg',
+      name: 'me_msg',
+      component: me_msg
     }
   ]
 })

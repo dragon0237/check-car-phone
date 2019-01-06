@@ -3,7 +3,7 @@
     <mu-bottom-nav :value="bottomNav" @change="handleChange">
         <mu-bottom-nav-item :to="{name:'index'}" value="/" title="预约年检" icon=""></mu-bottom-nav-item>
         <mu-bottom-nav-item :to="{name:'server_process'}" value="/server_process" title="服务流程" icon=""></mu-bottom-nav-item>
-        <mu-bottom-nav-item :to="{name:'order_list'}" value="/order_list" title="我的订单" icon=""></mu-bottom-nav-item>
+        <mu-bottom-nav-item :to="{name:'mine'}" value="/mine" title="我的" icon=""></mu-bottom-nav-item>
     </mu-bottom-nav>
   </mu-container>
 </template>

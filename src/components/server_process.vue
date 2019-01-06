@@ -67,6 +67,7 @@
   .process_bottom{
     clear: both;
     padding: 10px 20px;
+    margin-bottom: 35px;
   }
   .process{
     width: 100%;

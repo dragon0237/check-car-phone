@@ -5,7 +5,7 @@
       </div>
       <div class="order_body" v-model="order_list">
         <p><span class="lab">订单编号:</span><span>{{order_list.orderId}}</span></p>
-        <p><span class="lab">订单主题:</span><span>{{order_list.orderSubject}}</span></p>
+        <p><span class="lab">订单详情:</span><span>{{order_list.orderSubject}}</span></p>
         <p><span class="lab">预约时间:</span><span>{{order_list.orderTime}}</span></p>
         <p><span class="lab">订单价格:</span><span>￥{{order_list.orderMoney}}</span></p>
       </div>

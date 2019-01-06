@@ -1,7 +1,7 @@
 <template>
   <div class="order">
     <div class="order_title">
-      订单列表
+      当前订单
     </div>
     <div class="order_body" v-model="order_list">
       <h3>{{order_list.orderSubject}}</h3>
@@ -10,9 +10,13 @@
       <p><span class="lab">预约地址:</span><span>{{agentAddress}}</span></p>
       <p><span class="lab">订单价格:</span><span>￥{{order_list.orderMoney}}</span></p>
       <p><span class="lab">订单状态:</span><span>{{order_list.orderState}}</span></p>
-      <div v-if="this.order_state == 0" @click="to_payfor" class="to_check">去付款</div>
-      <div v-if="this.order_state == 1" @click="to_checkcar" class="to_check">去检车</div>
-      <div v-if="this.order_state == 5" @click="to_evaluate" class="to_check">去评价</div>
+			<!--<p><span class="lab" v-if="isRefuse">订单状态:</span><span>{{order_list.rejectReason}}</span></p>-->
+      <div v-if="this.order_state == 1" @click="to_payfor" class="to_check">
+				去付款<img src="/static/images/toPay.png" class="icon_img"/></div>
+			<div v-if="this.order_state == 2" class="to_wait">等待配单</div>
+			<div v-if="this.order_state == 10" class="to_wait">等待代理商确认</div>
+      <div v-if="this.order_state == 3" @click="to_checkcar" class="to_check">配单成功,去检车</div>
+      <!--<div v-if="this.order_state == 5" @click="to_evaluate" class="to_check">去评价</div>-->
       <div v-if="this.order_state < 5" class="to_cancel">取消订单</div>
     </div>
     <foot-nav></foot-nav>
@@ -29,6 +33,7 @@
     },
     data() {
       return {
+				isRefuse: false,
         order_list: {},
         agentAddress: "",
         order_state: 0
@@ -49,23 +54,28 @@
                   this.order_list.orderState = "下单成功";
                   break;
                 case 2:
-                  this.order_list.orderState = "配单成功";
+                  this.order_list.orderState = "付款成功";
                   break;
                 case 3:
-                  this.order_list.orderState = "订单拒绝";
+                  this.order_list.orderState = "配单成功";
                   break;
                 case 4:
-                  this.order_list.orderState = "开始检车";
+                  this.order_list.orderState = "已开始检车";
                   break;
                 case 5:
                   this.order_list.orderState = "订单完成";
                   break;
                 case 6:
-                  this.order_list.orderState = "订单处理失败";
-                  break;
-                case 7:
                   this.order_list.orderState = "评论完成";
                   break;
+                case 7:
+                  this.order_list.orderState = "订单拒绝";
+									this.isRefuse=true;
+                  break;
+								case 10:
+									this.order_list.orderState = "订单修改，等待代理商确认";
+									this.isRefuse=true;
+									break;
                 default :
                   this.order_list.orderState = ''
               }
@@ -78,10 +88,7 @@
         this.$router.push({name:'order'})
       },
       to_checkcar(){
-        this.$router.push({name:'check_car'})
-      },
-      to_evaluate(){
-        this.$router.push({name:'evaluate',query:{orderId: this.order_list.orderId}})
+        this.$router.push({name:'check_car',query:{orderId: this.order_list.orderId}})
       }
     }
   }
@@ -117,6 +124,21 @@
     color: #fafafa;
     font-size: 16px;
   }
+	.to_wait {
+		margin: 20px auto 0;
+		width: 90%;
+		line-height: 60px;
+		background-color: #00bcd4;
+		text-align: center;
+		color: #DC143C;
+		font-size: 16px;
+	}
+	.icon_img{
+
+		margin-left: 10px;
+		width: 30px;
+		height: 30px;
+	}
   .to_cancel{
     margin: 20px auto 0;
     width: 90%;

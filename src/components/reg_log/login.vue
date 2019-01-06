@@ -52,7 +52,7 @@
     },
     methods: {
       submit() {
-				console.log("into login");
+				console.log("into login")
         const date1 = new Date();
         // let params = {mobile:18241033575,password:123456,token:'4556'};
         // sessionStorage.setItem('USER',JSON.stringify(params));
@@ -69,7 +69,9 @@
                   params.token = res.data.token;
                   params.date = new Date();
                 localStorage.setItem('USER',JSON.stringify(params));
-
+								console.log("------")
+								console.log(JSON.parse(localStorage.getItem('USER')));
+								
                 //保存session
                   //跳转到首页
                 this.$router.push({name: 'index'})
