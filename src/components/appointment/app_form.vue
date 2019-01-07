@@ -1,7 +1,7 @@
  <template>
   <mu-container>
     <div class="font_pic">
-			<img v-if="refresh_img" :src="headpic" id="ex_img" :class="isUploadImg ? 'upload_pic2' : 'upload_pic' ">
+			<img v-if="refresh_img" :src="headpic" id="ex_img" class="upload_pic">
 			<span v-if="! isReadonly">上传行驶证的正面照片</span>
       <input class="fileInput" type="file" id="avater" name="file" accept="image/png,image/gif,image/jpeg" :disabled="isReadonly" @change="update" />
 

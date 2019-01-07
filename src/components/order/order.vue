@@ -11,21 +11,25 @@
       </div>
       <div class="pay_for">
         <div class="go_charge" @click="go_charge" >
-          支付宝支付
+          <img src="/static/images/zhifubao.png" alt="">支付宝支付
         </div>
       </div>
       <div class="pay_for">
         <div class="go_charge" @click="go_wxcharge" >
-          微信支付
+          <img src="/static/images/weixin.png" alt="">微信支付
         </div>
       </div>
+      <foot-nav></foot-nav>
     </div>
 </template>
 
 <script>
-
+  import footNav from '../../components/common/foot'
     export default {
         name: "order",
+      components: {
+        footNav
+      },
       data(){
           return{
             order_list:{
@@ -86,4 +90,10 @@
   background-color: #00bcd4;
   color: #fafafa;
 }
+  .go_charge img{
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 5px;
+  }
 </style>

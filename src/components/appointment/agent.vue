@@ -1,18 +1,9 @@
 <template>
   <div class="get_agent">
-      <mu-container>
-      <!-- <mu-form :model="form" class="mu-demo-form" label-position="left" label-width="100">
-        <mu-form-item prop="select" label="Select">
-          <mu-select v-model="form.select">
-            <mu-option v-for="(ids,item) in address" @change="addressChange" :label="ids" :value="ids"></mu-option>
-          </mu-select>
-        </mu-form-item>
-        <mu-form-item prop="select" label="Select">
-          <mu-select v-model="form.select1">
-            <mu-option v-for="option,index in options" :key="option" :label="option" :value="option"></mu-option>
-          </mu-select>
-        </mu-form-item>
-      </mu-form> -->
+		<div class="order_title">
+			选择代理商
+		</div>
+    <mu-container>
 			<mu-dialog title="提示信息" width="360" :open.sync="openSimple">
 				{{msg}}
 				<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
@@ -28,10 +19,10 @@
         <div class="agent_cell" v-for="(item,ids) in data" :key="ids">
           <div class="box" >
             <p class="name">{{item.agentAddress}}</p>
-            <p>代理商所在地:{{item.agentCity}}<span class="tel">代理商电话:{{item.agentCall}}</span></p>
-            <span class="col-md-3">5座车服务费用：￥{{item.smallPrice}}</span>
-            <span class="col-md-3">7座车服务费用：￥{{item.bigPrice}}</span>
-            <span class="col-md-3">运营车费用：￥{{item.operatePrice}}</span>
+            <p>代理商所在地: <span>{{item.agentCity}}</span>代理商电话:<span>{{item.agentCall}}</span></p>
+            <p class="col-md-3">5座车服务费用：<span>￥{{item.smallPrice}}</span></p>
+            <p class="col-md-3">7座车服务费用：<span>￥{{item.bigPrice}}</span></p>
+            <p class="col-md-3">运营车费用：<span>￥{{item.operatePrice}}</span></p>
           </div>
           <div class="appoint" :id="item.agentId" @click="agent">
             立即预约
@@ -136,7 +127,7 @@
               });
             },
             agent(e){
-              let id = e.target.getAttribute('id')
+              let id = e.target.getAttribute('id');
               this.$router.push({name:'app_msg_s',query:{agentId:id}})
             },
 						closeSimpleDialog () {
@@ -144,14 +135,14 @@
 						},
           },
           created(){
-            this.$ajax.get("/check-car/app/check/user/getUserInfo", {
-            }).then((res)=> {
-              if (res.data.code ==200){
-
-              }else{
-                this.$router.push({name: 'app_msg',query:{type:1}})
-              }
-            });
+//             this.$ajax.get("/check-car/app/check/user/getUserInfo", {
+//             }).then((res)=> {
+//               if (res.data.code ==200){
+//
+//               }else{
+//                 this.$router.push({name: 'app_msg',query:{type:1}})
+//               }
+//             });
             this.$ajax.get("/check-car/app/check/agent/all", {
             }).then((res)=> {
               if (res.data.code ==200){
@@ -168,7 +159,7 @@
     }
     .agent_cell{
       padding: 5px 10px;
-      background-color: #b4b4b4;
+      background-color: #b0eadf;
       margin-bottom: 10px;
     }
     .name{
@@ -176,11 +167,25 @@
     }
     .tel{
       margin-left: 15px;
+      color: #999999;
     }
     .appoint{
-      width: 60px;
+      padding: 5px 9px;
+      width: 75px;
       line-height: 30px;
       background-color: #00bcd4;
       color: #fafafa;
     }
-    </style>
+		.order_title {
+			line-height: 60px;
+			text-align: center;
+			background-color: #dddddd;
+		}
+    .box p{
+      color: #999999;
+    }
+    .box p span{
+      margin-right: 10px;
+      color: #666666;
+    }
+</style>

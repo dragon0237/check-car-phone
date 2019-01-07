@@ -3,22 +3,33 @@
     <steper></steper>
     <div class="check_car">
       <div class="check_font checkPic">
-        <input class="fileInput" type="file" id="check_font" name="file" accept="image/png,image/gif,image/jpeg" @change="check_font" />
-        <img :src="check_fontPic" id="font_img" alt="">
+        <input class="fileInput" type="file" id="check_font" name="file" accept="image/png,image/gif,image/jpeg" @change="car_out" />
+        <img :src="car_out_img" id="font_img" alt="">
+				<span >上传一张您车辆的外部照片</span>
       </div>
       <div class="check_back checkPic">
-        <input class="fileInput" type="file" id="check_back" name="file" accept="image/png,image/gif,image/jpeg" @change="check_back" />
-        <img :src="check_backPic" id="back_img" alt="">
+        <input class="fileInput" type="file" id="check_back" name="file" accept="image/png,image/gif,image/jpeg" @change="car_in" />
+        <img :src="car_in_img" id="back_img" alt="">
+				<span >上传一张您车辆的内部照片</span>
       </div>
     </div>
     <mu-form class="mu-demo-form receiver" ref="form" :model="Form" label-position="left" label-width="100">
-      <mu-form-item label="接待人姓名" prop="username" :rules="usernameRules">
+      <mu-form-item label="接待人姓名" prop="username" >
         <mu-text-field max-length="10" v-model="Form.receiver_name" prop="username"></mu-text-field>
       </mu-form-item>
-      <mu-form-item label="接待人手机号" prop="mobile" :rules="mobileRules">
+      <mu-form-item label="接待人手机号" prop="mobile" >
         <mu-text-field max-length="11" v-model="Form.receiver_call" prop="mobile"></mu-text-field>
       </mu-form-item>
     </mu-form>
+		<mu-dialog title="提示信息" width="360" :open.sync="openSimple">
+			{{msg}}
+			<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
+		</mu-dialog>
+		
+		<mu-dialog title="提示信息" width="360" :open.sync="openSimple2">
+			检车开始
+			<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog2">返回订单页面</mu-button>
+		</mu-dialog>
     <div class="evaluate" @click="start_check">开始检车</div>
   </div>
 </template>
@@ -32,38 +43,46 @@
       },
       data(){
           return{
-            usernameRules: [
-              {validate: (val) => !!val, message: '必须填写姓名'},
-              {validate: (val) => val.length >= 1, message: '用户名长度大于2小于5'}
-            ],
-            mobileRules: [
-              {validate: (val) => !!val, message: '必须填写手机号'},
-              {validate: (val) => val.length >= 10 && val.length <= 12, message: '手机号有误'}
-            ],
+						openSimple: false,
+						openSimple2: false,
+						msg: '',
+//             usernameRules: [
+//               {validate: (val) => !!val, message: '必须填写姓名'},
+//               {validate: (val) => val.length >= 1, message: '用户名长度大于2小于5'}
+//             ],
+//             mobileRules: [
+//               {validate: (val) => !!val, message: '必须填写手机号'},
+//               {validate: (val) => val.length >= 10 && val.length <= 12, message: '手机号有误'}
+//             ],
             Form: {
               receiver_name: "",
               receiver_call: ""
             },
-            check_fontPic: '../../../static/images/uploadCar.png',
-            check_backPic: '../../../static/images/uploadCar.png'
+            car_out_img: '../../../static/images/uploadCar.png',
+            car_in_img: '../../../static/images/uploadCar.png'
         }
       },
       methods: {
         start_check() {
-          this.$ajax.post('check-car/app/check/checkCar',{"orderId":this.$route.query.orderId,"receiver_name":this.Form.receiver_name,"receiver_call":this.Form.receiver_call})
-            .then((res)=>{
+          this.$ajax.post('check-car/app/check/checkCar',
+					{"orderId":this.$route.query.orderId,
+					"receiver_name":this.Form.receiver_name,
+					"receiver_call":this.Form.receiver_call
+					}).then((res)=>{
               if(res.data.code == 200) {
-                this.$router.push({name:'checked_car',query:{orderId:this.$route.query.orderId}})
+                this.openSimple2=true
               }
             })
         },
         //上传车外照片
-        check_font(e){
+        car_out(e){
           console.log(e);
           console.log(document.getElementById('avater'));
           let file = e.target.files[0];
           let param = new window.FormData(); //创建form对象
           param.append('file',file);//通过append向form对象添加数据
+					param.append('type','0');
+					param.append('orderId',this.$route.query.orderId);
           console.log(param.get('file')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
           let config = {
             headers:{'Content-Type':'multipart/form-data'}
@@ -71,24 +90,46 @@
           this.$ajax.post('/check-car/app/check/uploadBeforeImage', param , config)
             .then(res=>{
               console.log(res.data);
+							if(res.data.code==200){
+								this.car_out_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/1';
+							}else if (res.data.code==500){
+								this.openSimple=true
+								this.msg=res.data.msg
+								this.car_out_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/1';
+							}
             })
         },
         //上传车内照片
-        check_back(e){
+        car_in(e){
           console.log(e);
           console.log(document.getElementById('avater'));
           let file = e.target.files[0];
           let param = new window.FormData(); //创建form对象
           param.append('file',file);//通过append向form对象添加数据
+					param.append('type','1');
+					param.append('orderId',this.$route.query.orderId);
           console.log(param.get('file')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
           let config = {
             headers:{'Content-Type':'multipart/form-data'}
           }; //添加请求头
           this.$ajax.post('/check-car/app/check/uploadBeforeImage',param,config)
             .then(res=>{
-              console.log(res.data);
+              console.log(res.data)
+							if(res.data.code==200){
+								this.car_in_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/2';
+							}else if (res.data.code==500){
+								this.openSimple=true
+								this.msg=res.data.msg
+								this.car_in_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/2';
+							}
             })
         },
+				closeSimpleDialog(){
+					this.openSimple=false
+				},closeSimpleDialog2(){
+					this.openSimple=false
+					this.$router.push({name:'order_list'})
+				}
       }
     }
 </script>
@@ -108,6 +149,9 @@
   .check_car{
     height: 100px;
   }
+	.check_car span{
+		font-size: 10px;
+	}
   .checkPic{
     position: relative;
     width: 160px;

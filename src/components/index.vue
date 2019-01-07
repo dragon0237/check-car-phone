@@ -17,15 +17,17 @@
           <span>车检服务</span>
         </div>
         <div class="main_cell_body">
-          <router-link class="appointment" :to="{name:'agent'}">
+          <!-- <router-link class="appointment" :to="{name:'agent'}"> -->
+					<div class="appointment" >
             <div class="head_pic">
               <img src="/static/images/car.png" alt="">
             </div>
-            <div class="pic_msg">
+            <div class="pic_msg" @click="to_page">
               <p>在线预约 </p>
               <p>一键预约年检，快速办理</p>
             </div>
-          </router-link>
+					</div>
+          <!-- </router-link> -->
           <!--:to="{name:'index'}"-->
           <div class="appointment" @click="replace">
             <div class="head_pic">
@@ -117,8 +119,18 @@
     </div>
     <mu-dialog title="提示信息" width="360" :open.sync="openSimple">
       {{msg}}
-      <mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">Close</mu-button>
+      <mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
     </mu-dialog>
+		
+		<mu-dialog title="提示信息" width="360" :open.sync="openSimple2">
+			请先上传您的行驶证信息!
+			<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog2">前往</mu-button>
+		</mu-dialog>
+		
+		<mu-dialog title="提示信息" width="360" :open.sync="openSimple3">
+			您有未完成的订单!
+			<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog3">前往查看</mu-button>
+		</mu-dialog>
     <foot-nav></foot-nav>
   </div>
 </template>
@@ -135,16 +147,44 @@
         banner: 'banner',
         bannerImg: '',
         openSimple: false,
+				openSimple2: false,
+				openSimple3: false,
         msg: '敬请期待'
       }
     },
     methods: {
+			to_page(){
+					this.$ajax.get("/check-car/app/check/user/getCarInfo", {
+					}).then((res)=> {
+						if (res.data.code ==200){
+							this.$ajax.get("/check-car/app/check/userOrders?type=0", {}).then((res) => {
+								console.log(res.data)
+								if(res.data.code == 200 && res.data.data.length == 1){
+									console.log("111")
+									this.openSimple3 = true
+									return
+								}else{
+									this.$router.push({name:'agent'})
+								}
+							})
+							
+						}else{
+							this.openSimple2 = true
+							// this.$router.push({name:'app_msg'})
+						}
+					});
+				
+			},
       replace(){
         this.openSimple = true;
       },
       closeSimpleDialog () {
         this.openSimple = false;
-      },
+      },closeSimpleDialog2(){
+				this.$router.push({name:'app_msg'})
+			},closeSimpleDialog3(){
+				this.$router.push({name:'order_list'})
+			}
     }
   }
 </script>

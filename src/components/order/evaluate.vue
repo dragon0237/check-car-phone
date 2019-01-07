@@ -4,14 +4,23 @@
         <div class="check_font checkPic">
           <input class="fileInput" type="file" id="check_font" name="file" accept="image/png,image/gif,image/jpeg" @change="check_font" />
           <img :src="check_fontPic" id="font_img" alt="">
+					<span >上传一张您车辆的外部照片</span>
         </div>
         <div class="check_back checkPic">
           <input class="fileInput" type="file" id="check_back" name="file" accept="image/png,image/gif,image/jpeg" @change="check_back" />
           <img :src="check_backPic" id="back_img" alt="">
+					<span >上传一张您车辆的内部照片</span>
+        </div>
+      </div>
+      <div class="star">
+        <p>评价</p>
+        <div class="grade">
+          <img  v-for="(item,index) in options" :data-id=index  :src=item alt="" @click="choose_star">
+          <span class="eva_det">{{eva_msgDet}}</span>
         </div>
       </div>
       <mu-container>
-        <mu-form :model="form" class="mu-demo-form" label-position="top" label-width="100">
+        <mu-form :model="form" class="mu-demo-form eva_form" label-position="top" label-width="100">
           <mu-form-item prop="textarea" label="评语">
             <mu-text-field multi-line :rows="3" :rows-max="6" v-model="form.textarea"></mu-text-field>
           </mu-form-item>
@@ -26,15 +35,31 @@
         name: "evaluate",
       data(){
           return{
+            options: {
+              1: '/static/images/xingxingshixin.png',
+              2: '/static/images/xingxingshixin.png',
+              3: '/static/images/xingxingshixin.png',
+              4: '/static/images/xingxingshixin.png',
+              5: '/static/images/xingxingshixin.png'
+            },
+            store: 5,
+            eva_msg: {
+              1: '差评',
+              2: '可以接受',
+              3: '不错',
+              4: '良好',
+              5: '非常好'
+            },
+            eva_msgDet: '非常好',
             form: {
               textarea: ''
             },
-            check_fontPic: '../../../static/images/uploadCar.png',
-            check_backPic: '../../../static/images/uploadCar.png'
+            check_fontPic: '/static/images/uploadCar.png',
+            check_backPic: '/static/images/uploadCar.png'
           }
       },methods: {
         sub_evaluate() {
-          this.$ajax.post('check-car/app/check/assess',{"orderId": this.$route.query.orderId,"orderScore": this.form.select,"orderAccess": this.form.textarea})
+          this.$ajax.post('check-car/app/check/assess',{"orderId": this.$route.query.orderId,"orderScore": this.store,"orderAccess": this.form.textarea})
             .then((res)=>{
               if (res.data.code == 200){
                 this.$router.push({name:'order_list'})
@@ -73,6 +98,18 @@
               console.log(res.data);
             })
         },
+        choose_star(e) {
+          for (let i = 1;i < 6;i++){
+            this.options[i] = '/static/images/xingxing.png';
+          }
+          let id = e.target.getAttribute('data-id');
+          let len = parseInt(id) + 1;
+          this.store = len - 1;
+          this.eva_msgDet = this.eva_msg[id];
+          for (let i = 1;i < len;i++){
+            this.options[i] = '/static/images/xingxingshixin.png';
+          }
+        }
       }
     }
 </script>
@@ -90,6 +127,9 @@
 .check_car{
   height: 100px;
 }
+.check_car span{
+		font-size: 10px;
+	}
 .checkPic{
   position: relative;
   width: 160px;
@@ -114,4 +154,24 @@
   top: 0;
   opacity: 0;
 }
+  .eva_form{
+    margin-top: 20px;
+  }
+  .star{
+    margin-top: 50px;
+  }
+  .star p{
+    padding: 10px;
+  }
+  .grade{
+    padding: 0 40px;
+  }
+  .grade img{
+    margin-right: 10px;
+  }
+  .eva_det{
+    margin-left: 10px;
+    font-size: 14px;
+    color: #ff0785;
+  }
 </style>

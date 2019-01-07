@@ -68,6 +68,7 @@
                   params.expire = res.data.expire;
                   params.token = res.data.token;
                   params.date = new Date();
+								localStorage.clear();
                 localStorage.setItem('USER',JSON.stringify(params));
 								console.log("------")
 								console.log(JSON.parse(localStorage.getItem('USER')));
