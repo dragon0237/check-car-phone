@@ -1,8 +1,12 @@
 <template>
   <div class="login">
-    <h2>预检车平台</h2>
+    <h2>登陆</h2>
     <mu-container class="login_box">
-      <mu-paper class="demo-paper headpic" circle :z-depth="0"></mu-paper>
+      <!-- <mu-paper class="demo-paper headpic" circle :z-depth="0"></mu-paper> -->
+
+			<div>
+				<h2 class="head">预检车平台</h2>
+			</div>
       <mu-form ref="form" :model="validateForm" class="mu-demo-form" label-position="left" label-width="80">
         <mu-form-item label="手机号" prop="mobile">
           <mu-text-field max-length="11" v-model="validateForm.mobile" prop="mobile"></mu-text-field>
@@ -52,7 +56,6 @@
     },
     methods: {
       submit() {
-				console.log("into login")
         const date1 = new Date();
         // let params = {mobile:18241033575,password:123456,token:'4556'};
         // sessionStorage.setItem('USER',JSON.stringify(params));
@@ -72,7 +75,7 @@
                 localStorage.setItem('USER',JSON.stringify(params));
 								console.log("------")
 								console.log(JSON.parse(localStorage.getItem('USER')));
-								
+
                 //保存session
                   //跳转到首页
                 this.$router.push({name: 'index'})
@@ -96,7 +99,10 @@
     margin: 3rem auto;
     text-align: center;
   }
-
+	.head{
+		text-align: center;
+		font-weight: 450;
+	}
   .login_box {
     width: 17.44rem;
     height: 27.38rem;

@@ -3,12 +3,15 @@
   <div class="login">
     <h2>注册</h2>
     <mu-container class="login_box">
-      <mu-paper class="demo-paper headpic" circle :z-depth="0">
+      <!-- <mu-paper class="demo-paper headpic" circle :z-depth="0">
           <div class="imageFileInput">
             <input class="fileInput" type="file" id="avater" name="file" accept="image/png,image/gif,image/jpeg" @change="update" />
             <img :src="headpic" id="ex_img">
           </div>
-      </mu-paper>
+      </mu-paper> -->
+			<div>
+				<h2 class="head">预检车平台</h2>
+			</div>
       <mu-form class="mu-demo-form" ref="form" :model="validateForm" label-position="left" label-width="80">
         <mu-form-item label="姓名" prop="username" :rules="usernameRules">
           <mu-text-field max-length="10" v-model="validateForm.username" prop="username"></mu-text-field>
@@ -134,6 +137,10 @@
     margin: 3rem auto;
     text-align: center;
   }
+	.head{
+		text-align: center;
+		font-weight: 450;
+	}
   .login_box{
     width: 17.44rem;
     height: 27.38rem;

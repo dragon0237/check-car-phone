@@ -1,8 +1,10 @@
 <template>
   <div class="get_agent">
-		<div class="order_title">
+		<div class="order_title" v-if="this.$route.query.orderId">
 			选择代理商
 		</div>
+		
+		<steper v-if=" !this.$route.query.orderId"></steper>
     <mu-container>
 			<mu-dialog title="提示信息" width="360" :open.sync="openSimple">
 				{{msg}}
@@ -29,6 +31,19 @@
           </div>
         </div>
       </div>
+			
+			<mu-dialog title="提示信息" width="360" :open.sync="openSimple2">
+				确定修改为此代理商吗?修改后要重新等待配单
+				<mu-button slot="actions" flat @click="closeSimpleDialog2">取消</mu-button>
+				<mu-button slot="actions" flat color="primary" @click="goSuccess2">确定</mu-button>
+			</mu-dialog>
+			
+			<mu-dialog title="提示信息" width="360" :open.sync="openSimple3">
+				{{msg2}}
+				<mu-button slot="actions" flat color="primary" @click="goSuccess3">返回订单页面</mu-button>
+			</mu-dialog>
+			
+			
     </div>
 
 
@@ -72,11 +87,15 @@
     '澳门': ['澳门'],
     '台湾': ['台北市', '高雄市', '台北县', '桃园县', '新竹县', '苗栗县', '台中县', '彰化县', '南投县', '云林县', '嘉义县', '台南县', '高雄县', '屏东县', '宜兰县', '花莲县', '台东县', '澎湖县', '基隆市', '新竹市', '台中市', '嘉义市', '台南市']
   }
+	import steper from '../common/steper'
     export default {
             name: "agent",
+						components:{
+							steper
+						},
           data () {
-            return {
-
+            return {	
+							agentId: '',
               addressSlots: [
                 {
                   width: '100%',
@@ -97,7 +116,10 @@
               addressProvince: '北京',
               addressCity: '北京',
 							openSimple: false,
-							msg: ''
+							openSimple2: false,
+							openSimple3: false,
+							msg: '',
+							msg2: ''
             }
           },
           methods: {
@@ -120,6 +142,9 @@
                 if (res.data.code ==200){
                   this.data = res.data.data;
 									if(res.data.data.length == 0){
+										
+										// Toast.info('该区域暂无代理商');
+										
 										this.msg='该区域暂无代理商'
 										this.openSimple = true
 									}
@@ -128,11 +153,37 @@
             },
             agent(e){
               let id = e.target.getAttribute('id');
-              this.$router.push({name:'app_msg_s',query:{agentId:id}})
+							this.agentId=id
+							if(this.$route.query.orderId){
+								this.openSimple2=true
+							}else{
+								this.$router.push({name:'app_msg_s',query:{agentId:id}})
+							}
+
             },
 						closeSimpleDialog () {
 							this.openSimple = false;
-						},
+						},closeSimpleDialog2(){
+							this.openSimple2=false
+						},goSuccess2(){
+							this.openSimple2=false
+							this.$ajax.post("/check-car/app/check/updateOrder", {
+								"orderId": this.$route.query.orderId,
+								"agentId": this.agentId
+							 }).then((res)=> {
+							    if (res.data.code ==200 || res.data.code ==500){
+											this.openSimple3=true
+											this.msg2=res.data.msg
+							    }else{
+										this.openSimple3=true
+										this.msg2='未知异常'
+									}
+							});
+							 
+						},goSuccess3(){
+							this.openSimple3=false
+							this.$router.push({name:'order_list'})
+						}
           },
           created(){
 //             this.$ajax.get("/check-car/app/check/user/getUserInfo", {

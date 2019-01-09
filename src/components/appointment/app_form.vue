@@ -3,7 +3,7 @@
     <div class="font_pic">
 			<img v-if="refresh_img" :src="headpic" id="ex_img" class="upload_pic">
 			<span v-if="! isReadonly">上传行驶证的正面照片</span>
-      <input class="fileInput" type="file" id="avater" name="file" accept="image/png,image/gif,image/jpeg" :disabled="isReadonly" @change="update" />
+      <input class="fileInput" accept="image/*" capture='camera' type="file" id="avater" name="file"  :disabled="isReadonly" @change="update" />
 
     </div>
     <mu-form :model="form" class="mu-demo-form" label-position="left" label-width="100">
@@ -73,7 +73,7 @@
           },
           loading: false,
 					operateCar: '1',
-          headpic: '../../../static/images/uploadCar.png'
+          headpic: '/static/images/camera-iris.png'
         }
       },
 			computed: {
@@ -99,7 +99,6 @@
             "plateNum": this.form.plateNum,
             "vinId": this.form.vinId,
             "registerDate": this.form.registerDate,
-						// ( == true? 1: 0)
             "operateCar": this.operateCar
           }).then((res)=> {
             if (res.data.code ==200){

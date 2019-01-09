@@ -3,19 +3,19 @@
       <div class="check_car">
         <div class="check_font checkPic">
           <input class="fileInput" type="file" id="check_font" name="file" accept="image/png,image/gif,image/jpeg" @change="check_font" />
-          <img :src="check_fontPic" id="font_img" alt="">
+          <img :src="car_out_img" id="font_img" alt="">
 					<span >上传一张您车辆的外部照片</span>
         </div>
         <div class="check_back checkPic">
           <input class="fileInput" type="file" id="check_back" name="file" accept="image/png,image/gif,image/jpeg" @change="check_back" />
-          <img :src="check_backPic" id="back_img" alt="">
+          <img :src="car_in_img" id="back_img" alt="">
 					<span >上传一张您车辆的内部照片</span>
         </div>
       </div>
       <div class="star">
         <p>评价</p>
         <div class="grade">
-          <img  v-for="(item,index) in options" :data-id=index  :src=item alt="" @click="choose_star">
+          <img  v-for="(item,index) in options" :data-id=index  :src=item alt="" @click="choose_star" />
           <span class="eva_det">{{eva_msgDet}}</span>
         </div>
       </div>
@@ -25,6 +25,16 @@
             <mu-text-field multi-line :rows="3" :rows-max="6" v-model="form.textarea"></mu-text-field>
           </mu-form-item>
         </mu-form>
+				
+				<mu-dialog title="提示信息" width="360" :open.sync="openSimple">
+					{{msg}}
+					<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
+				</mu-dialog>
+				
+				<mu-dialog title="提示信息" width="360" :open.sync="openSimple2">
+					评价完成
+					<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog2">返回首页</mu-button>
+				</mu-dialog>
       </mu-container>
       <div class="submit" @click="sub_evaluate">提交</div>
     </div>
@@ -35,6 +45,9 @@
         name: "evaluate",
       data(){
           return{
+						openSimple: false,
+						msg: '',
+						openSimple2: false,
             options: {
               1: '/static/images/xingxingshixin.png',
               2: '/static/images/xingxingshixin.png',
@@ -54,16 +67,22 @@
             form: {
               textarea: ''
             },
-            check_fontPic: '/static/images/uploadCar.png',
-            check_backPic: '/static/images/uploadCar.png'
+            car_out_img: '/static/images/uploadCar.png',
+            car_in_img: '/static/images/uploadCar.png'
           }
       },methods: {
         sub_evaluate() {
-          this.$ajax.post('check-car/app/check/assess',{"orderId": this.$route.query.orderId,"orderScore": this.store,"orderAccess": this.form.textarea})
-            .then((res)=>{
+          this.$ajax.post('check-car/app/check/assess',
+					{"orderId": this.$route.query.orderId,
+					"orderScore": this.store,
+					"orderAssess": this.form.textarea,
+					}).then((res)=>{
               if (res.data.code == 200){
-                this.$router.push({name:'order_list'})
-              }
+								this.openSimple2=true
+              }else{
+								this.openSimple=true
+								this.msg=res.data.msg
+							}
             })
         },
         //上传车外照片
@@ -73,13 +92,22 @@
           let file = e.target.files[0];
           let param = new window.FormData(); //创建form对象
           param.append('file',file);//通过append向form对象添加数据
+					param.append('type','0');
+					param.append('orderId',this.$route.query.orderId);
           console.log(param.get('file')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
           let config = {
             headers:{'Content-Type':'multipart/form-data'}
           }; //添加请求头
-          this.$ajax.post('/check-car/app/check/uploadBeforeImage', param , config)
+          this.$ajax.post('/check-car/app/check/uploadAfterImage', param , config)
             .then(res=>{
               console.log(res.data);
+							if(res.data.code==200){
+								this.car_out_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/3';
+							}else if (res.data.code==500){
+								this.openSimple=true
+								this.msg=res.data.msg
+								this.car_out_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/3';
+							}
             })
         },
         //上传车内照片
@@ -89,13 +117,22 @@
           let file = e.target.files[0];
           let param = new window.FormData(); //创建form对象
           param.append('file',file);//通过append向form对象添加数据
+					param.append('type','1');
+					param.append('orderId',this.$route.query.orderId);
           console.log(param.get('file')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
           let config = {
             headers:{'Content-Type':'multipart/form-data'}
           }; //添加请求头
-          this.$ajax.post('/check-car/app/check/uploadBeforeImage',param,config)
+          this.$ajax.post('/check-car/app/check/uploadAfterImage',param,config)
             .then(res=>{
               console.log(res.data);
+							if(res.data.code==200){
+								this.car_in_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/4';
+							}else if (res.data.code==500){
+								this.openSimple=true
+								this.msg=res.data.msg
+								this.car_in_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/4';
+							}
             })
         },
         choose_star(e) {
@@ -109,7 +146,14 @@
           for (let i = 1;i < len;i++){
             this.options[i] = '/static/images/xingxingshixin.png';
           }
-        }
+        },
+				closeSimpleDialog(){
+					this.openSimple=false
+				},
+				closeSimpleDialog2(){
+					this.openSimple2=false
+					this.$router.push({name:'index'})
+				}
       }
     }
 </script>

@@ -3,7 +3,7 @@
     <steper></steper>
     <div class="check_car">
       <div class="check_font checkPic">
-        <input class="fileInput" type="file" id="check_font" name="file" accept="image/png,image/gif,image/jpeg" @change="car_out" />
+        <input class="fileInput" type="file" id="check_font" name="file" accept="image/*" capture='camera' @change="car_out" />
         <img :src="car_out_img" id="font_img" alt="">
 				<span >上传一张您车辆的外部照片</span>
       </div>
@@ -25,7 +25,7 @@
 			{{msg}}
 			<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
 		</mu-dialog>
-		
+
 		<mu-dialog title="提示信息" width="360" :open.sync="openSimple2">
 			检车开始
 			<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog2">返回订单页面</mu-button>
@@ -58,8 +58,8 @@
               receiver_name: "",
               receiver_call: ""
             },
-            car_out_img: '../../../static/images/uploadCar.png',
-            car_in_img: '../../../static/images/uploadCar.png'
+            car_out_img: '/static/images/camera.png',
+            car_in_img: '/static/images/camera.png'
         }
       },
       methods: {
@@ -91,6 +91,7 @@
             .then(res=>{
               console.log(res.data);
 							if(res.data.code==200){
+								// 129.204.110.142
 								this.car_out_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/1';
 							}else if (res.data.code==500){
 								this.openSimple=true
@@ -156,7 +157,7 @@
     position: relative;
     width: 160px;
     height: 100px;
-    background-color: #00bcd4;
+    /*background-color: #00bcd4;*/
   }
   .check_font{
     float: left;

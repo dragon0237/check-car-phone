@@ -8,6 +8,7 @@ import Resource from 'vue-resource'
 
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
+// import '/static/iconfont/material-icons.css'
 
 
 Vue.use(MuseUI);

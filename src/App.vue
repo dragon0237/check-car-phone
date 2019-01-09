@@ -23,4 +23,7 @@ export default {
   /*text-align: center;*/
   /*color: #2c3e50;*/
   }
+  .mu-primary-text-color{
+    font-size: 16px;
+  }
 </style>

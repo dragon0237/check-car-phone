@@ -19,6 +19,10 @@
           <img src="/static/images/weixin.png" alt="">微信支付
         </div>
       </div>
+			<mu-dialog title="提示信息" width="360" :open.sync="openSimple">
+				{{msg}}
+				<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
+			</mu-dialog>
       <foot-nav></foot-nav>
     </div>
 </template>
@@ -32,6 +36,8 @@
       },
       data(){
           return{
+						openSimple: false,
+						msg: '',
             order_list:{
 
             },
@@ -46,15 +52,22 @@
         },
         go_wxcharge(){
           alert('敬请期待')
-        }
+        },
+				closeSimpleDialog(){
+					this.openSimple=false
+				}
       },
       created(){
-        this.$ajax.get("/check-car/app/check/userOrders", {
+        this.$ajax.get("/check-car/app/check/getOrder?orderId="+this.$route.query.orderId, {
         }).then((res)=> {
+					console.log(res)
           if (res.data.code == 200) {
-
-              this.order_list = res.data.data[0].orderEntity;
-          }
+							
+              this.order_list = res.data.data.orderEntity;
+          }else{
+						this.msg= res.data.msg
+						this.openSimple=false
+					}
         });
       }
     }

@@ -3,12 +3,12 @@
     <mu-stepper class="stepper" :active-step="activeStep">
       <mu-step>
         <mu-step-label>
-          基本信息
+          选代理商
         </mu-step-label>
       </mu-step>
       <mu-step>
         <mu-step-label>
-          预约检车
+          下订单
         </mu-step-label>
       </mu-step>
       <mu-step>

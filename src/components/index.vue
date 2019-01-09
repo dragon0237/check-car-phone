@@ -6,10 +6,10 @@
     <div class="main_box">
       <mu-carousel hide-controls class="banner">
         <mu-carousel-item>
-          <img :src="'../../static/images/banner1.png'">
+          <img src="/static/images/banner21.jpg">
         </mu-carousel-item>
         <mu-carousel-item>
-          <img :src="'../../static/images/banner2.png'">
+          <img src="/static/images/banner23.jpg">
         </mu-carousel-item>
       </mu-carousel>
       <div class="main_cell">
@@ -56,7 +56,7 @@
             <p><img src="/static/images/circle.png" alt=""><span>三角警示牌</span></p>
           </div>
           <div class="prepare">
-            那些车需要年检？
+            哪些车需要年检？
           </div>
           <div class="need">
             <p><img src="/static/images/circle.png" alt=""><span>注册登记日期超过6年的私家车(6年后1年一检)</span></p>
@@ -121,12 +121,12 @@
       {{msg}}
       <mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
     </mu-dialog>
-		
+
 		<mu-dialog title="提示信息" width="360" :open.sync="openSimple2">
 			请先上传您的行驶证信息!
 			<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog2">前往</mu-button>
 		</mu-dialog>
-		
+
 		<mu-dialog title="提示信息" width="360" :open.sync="openSimple3">
 			您有未完成的订单!
 			<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog3">前往查看</mu-button>
@@ -158,22 +158,20 @@
 					}).then((res)=> {
 						if (res.data.code ==200){
 							this.$ajax.get("/check-car/app/check/userOrders?type=0", {}).then((res) => {
-								console.log(res.data)
 								if(res.data.code == 200 && res.data.data.length == 1){
-									console.log("111")
 									this.openSimple3 = true
 									return
 								}else{
 									this.$router.push({name:'agent'})
 								}
 							})
-							
+
 						}else{
 							this.openSimple2 = true
 							// this.$router.push({name:'app_msg'})
 						}
 					});
-				
+
 			},
       replace(){
         this.openSimple = true;
@@ -181,8 +179,10 @@
       closeSimpleDialog () {
         this.openSimple = false;
       },closeSimpleDialog2(){
+				this.openSimple2=false
 				this.$router.push({name:'app_msg'})
 			},closeSimpleDialog3(){
+				this.openSimple3=false
 				this.$router.push({name:'order_list'})
 			}
     }
