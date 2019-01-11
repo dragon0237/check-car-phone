@@ -5,6 +5,8 @@ import App from './App'
 import router from './router'
 import Resource from 'vue-resource'
 
+import Toast from 'muse-ui-toast';
+
 
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
@@ -12,6 +14,7 @@ import 'muse-ui/dist/muse-ui.css'
 
 
 Vue.use(MuseUI);
+Vue.use(Toast);
 
 Vue.config.productionTip = false;
 Vue.use(Resource);

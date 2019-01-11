@@ -115,7 +115,7 @@
     </div>
     <div class="com_msg">
       <p>客服电话:<span>&nbsp;&nbsp;000-000-0000</span></p>
-      <p>北京百集利科技有限公司</p>
+      <p>北京百集利信息科技有限公司</p>
     </div>
     <mu-dialog title="提示信息" width="360" :open.sync="openSimple">
       {{msg}}

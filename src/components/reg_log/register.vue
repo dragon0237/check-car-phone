@@ -10,7 +10,7 @@
           </div>
       </mu-paper> -->
 			<div>
-				<h2 class="head">预检车平台</h2>
+				<h2 class="head">吉速车福检车平台</h2>
 			</div>
       <mu-form class="mu-demo-form" ref="form" :model="validateForm" label-position="left" label-width="80">
         <mu-form-item label="姓名" prop="username" :rules="usernameRules">

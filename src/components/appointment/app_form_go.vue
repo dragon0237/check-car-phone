@@ -74,8 +74,10 @@
             "fuelType": this.form.fuelType,
             "driverType": this.form.driverType
           }).then((res)=> {
+						console.log(res.data)
             if (res.data.code === 200) {
-              this.$router.push({name:'order',query:{orderId:res.data.orderId,orderTime:res.data.orderTime,order_subject:res.data.order_subject,basePrice:res.data.basePrice,operatePrice:res.data.operatePrice,orderMoney:res.data.orderMoney}});
+							this.$router.push({name:'order',query:{orderId: res.data.data.orderId}})
+              // this.$router.push({name:'order',query:{orderId:res.data.orderId,orderTime:res.data.orderTime,order_subject:res.data.order_subject,basePrice:res.data.basePrice,operatePrice:res.data.operatePrice,orderMoney:res.data.orderMoney}});
             }else if (res.data.code == 500){
               this.openSimple = true;
               this.msg = res.data.msg

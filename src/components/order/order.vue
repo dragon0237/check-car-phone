@@ -23,6 +23,11 @@
 				{{msg}}
 				<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
 			</mu-dialog>
+			
+			<mu-dialog title="请将如下网址复制到浏览器打开" width="360" :open.sync="openSimple2">
+				{{alipay_url}}
+				<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
+			</mu-dialog>
       <foot-nav></foot-nav>
     </div>
 </template>
@@ -36,7 +41,9 @@
       },
       data(){
           return{
+						alipay_url:'',
 						openSimple: false,
+						openSimple2: false,
 						msg: '',
             order_list:{
 
@@ -45,16 +52,25 @@
       },
       methods:{
         go_charge(){
-
-					window.open("http://129.204.110.142:8080"+"/check-car/app/alipay/goAlipay/"+this.order_list.orderId);
-
-					this.$router.push({name:'order_list'})
+					let ua = navigator.userAgent.toLowerCase() || window.navigator.userAgent.toLowerCase()
+					let isWX = /MicroMessenger/i.test(ua)
+					if(isWX){
+						this.openSimple2=true
+						this.alipay_url= "http://114.115.215:8080"+"/check-car/app/alipay/goAlipay/"+this.order_list.orderId
+						
+					}else{
+							window.open("http://114.115.215:8080"+"/check-car/app/alipay/goAlipay/"+this.order_list.orderId);
+							this.$router.push({name:'order_list'})
+					}
+// 					window.open("http://114.115.215.44:8080"+"/check-car/app/alipay/goAlipay/"+this.order_list.orderId);
+// 					this.$router.push({name:'order_list'})
         },
         go_wxcharge(){
           alert('敬请期待')
         },
 				closeSimpleDialog(){
 					this.openSimple=false
+					this.openSimple2=false
 				}
       },
       created(){

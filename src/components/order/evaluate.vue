@@ -102,11 +102,11 @@
             .then(res=>{
               console.log(res.data);
 							if(res.data.code==200){
-								this.car_out_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/3';
+								this.car_out_img = 'http://114.115.215.44:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/3';
 							}else if (res.data.code==500){
 								this.openSimple=true
 								this.msg=res.data.msg
-								this.car_out_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/3';
+								this.car_out_img = 'http://114.115.215.44:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/3';
 							}
             })
         },
@@ -127,11 +127,11 @@
             .then(res=>{
               console.log(res.data);
 							if(res.data.code==200){
-								this.car_in_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/4';
+								this.car_in_img = 'http://114.115.215.44:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/4';
 							}else if (res.data.code==500){
 								this.openSimple=true
 								this.msg=res.data.msg
-								this.car_in_img = 'http://129.204.110.142:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/4';
+								this.car_in_img = 'http://114.115.215.44:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/4';
 							}
             })
         },

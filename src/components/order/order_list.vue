@@ -3,7 +3,7 @@
     <div class="order_title">
       当前订单
     </div>
-    <div class="order_body" v-model="order_list">
+    <div class="order_body" v-model="order_list" style="padding-bottom: 50px;">
       <h3>{{order_list.orderSubject}}</h3>
       <p><span class="lab">订单编号:</span><span>{{order_list.orderId}}</span></p>
 			<mu-flex align-items="center">
@@ -149,6 +149,7 @@
 			},closeSimpleDialog(){
 				this.openSimple=false
 				this.openSimple3=false
+				window.reload()
 			},goSuccess(){
 				this.openSimple=false
 				this.$router.push({name:'evaluate',query:{orderId: this.order_list.orderId}})
@@ -162,6 +163,7 @@
 				}).then((res) => {
 					if(res.data.code == 200){
 						this.msg= res.data.msg
+						
 					}else if(res.data.code == 500){
 						this.msg= res.data.msg
 					}else{

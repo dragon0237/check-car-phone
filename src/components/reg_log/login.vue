@@ -5,7 +5,7 @@
       <!-- <mu-paper class="demo-paper headpic" circle :z-depth="0"></mu-paper> -->
 
 			<div>
-				<h2 class="head">预检车平台</h2>
+				<h2 class="head">吉速车福检车平台</h2>
 			</div>
       <mu-form ref="form" :model="validateForm" class="mu-demo-form" label-position="left" label-width="80">
         <mu-form-item label="手机号" prop="mobile">
@@ -67,7 +67,7 @@
             }).then((res)=>{
               // 响应成功回调
               if (res.data.code == 200) {
-                let params = {};
+                let params = {};  
                   params.expire = res.data.expire;
                   params.token = res.data.token;
                   params.date = new Date();

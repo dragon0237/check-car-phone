@@ -3,10 +3,11 @@
     <div class="font_pic">
 			<img v-if="refresh_img" :src="headpic" id="ex_img" class="upload_pic">
 			<span v-if="! isReadonly">上传行驶证的正面照片</span>
-      <input class="fileInput" accept="image/*" capture='camera' type="file" id="avater" name="file"  :disabled="isReadonly" @change="update" />
+			<!-- capture='camera'  -->
+      <input class="fileInput" accept="image/*" type="file" id="avater" name="file" @change="update" />
 
     </div>
-    <mu-form :model="form" class="mu-demo-form" label-position="left" label-width="100">
+    <mu-form :model="form" class="mu-demo-form pa " label-position="left" label-width="100" style="padding-bottom: 80px;">
 
       <mu-form-item prop="select" label="车辆类型">
         <mu-select v-model="form.carType" :readonly="isReadonly">
@@ -20,17 +21,23 @@
         <mu-text-field v-model="form.vinId" prop="vinId" max-length="17" :readonly="isReadonly"></mu-text-field>
       </mu-form-item>
       <mu-form-item prop="date" label="车辆注册日期">
-        <mu-date-input v-model="form.registerDate" container="dialog" :disabled="isReadonly"  full-width></mu-date-input>
+				<span>{{form.registerDate}}</span>
+        <!-- <mu-date-input v-model="form.registerDate" container="dialog" :disabled="isReadonly"  full-width></mu-date-input> -->
       </mu-form-item>
-			<mu-flex align-items="center" :disabled="isReadonly" style="padding-bottom: 8px;">
-				<span style="margin-right: 16px;">是否为运营车:</span>
+			<mu-form-item prop="date" label="车辆使用性质">
+				<!-- <mu-date-input v-model="form.registerDate" container="dialog" :disabled="isReadonly"  full-width></mu-date-input> -->
+				<span>{{form.use_character}}</span>
+			</mu-form-item>
+			<!-- <mu-flex align-items="center" :disabled="isReadonly" style="padding-bottom: 8px;">
+				<span style="margin-right: 16px;">使用性质:</span>
 				<mu-radio v-model="operateCar" style="margin-right: 16px;" checked value="1" label="是" ></mu-radio>
 				<mu-radio v-model="operateCar" style="margin-right: 16px;" value="0" label="否" ></mu-radio>
-			</mu-flex>
-      <mu-circular-progress v-if="this.loading" class="loading demo-circular-progress" :size="36"></mu-circular-progress>
+			</mu-flex> -->
+      
 			<mu-button class="editBtn" round color="success" v-if="isReadonly" @click="editInfo">修改</mu-button>
-			<mu-button class="nextBtn" @click="to_next" v-if="!isReadonly" color="primary">保存</mu-button>
-
+			<mu-button class="nextBtn" @click="to_next" v-if="isSave" color="primary">保存</mu-button>
+			<mu-circular-progress v-if="this.loading" class="loading demo-circular-progress" :size="36" text="图片解析中">
+			</mu-circular-progress>
     </mu-form>
     <mu-dialog title="提示信息" width="360" :open.sync="openSimple">
       {{msg}}
@@ -42,6 +49,7 @@
 </template>
 
 <script>
+
     export default {
         name: "app_form",
       data () {
@@ -49,6 +57,7 @@
 					refresh_img: true,
 					isUploadImg: false,
 					isReadonly: false,
+					isSave: false,
 					carIdRules: [
 						{validate: (val) => !!val, message: '必须填写车牌号'},
 						{validate: (val) => this.isLicensePlate(val), message: '车牌号有误'}
@@ -68,7 +77,8 @@
             carType: '',
             plateNum: '',
             vinId: '',
-            registerDate: ''
+            registerDate: '',
+						use_character:''
 
           },
           loading: false,
@@ -76,18 +86,10 @@
           headpic: '/static/images/camera-iris.png'
         }
       },
-			computed: {
-				img_class: function(){
-					if(this.isReadonly){
-						return upload_pic2;
-					}else{
-						return upload_pic;
-					}
-				}
-			},
       methods: {
         editInfo(){
           this.isReadonly = false
+					this.isSave = true
         },
 				// 驾驶证校验
 				isLicensePlate(str) {
@@ -98,14 +100,15 @@
             "carType": this.form.carType == '五座汽车'?5:7,
             "plateNum": this.form.plateNum,
             "vinId": this.form.vinId,
-            "registerDate": this.form.registerDate,
-            "operateCar": this.operateCar
+            "registerDate": this.form.registerDate
+            // "operateCar": this.operateCar
           }).then((res)=> {
             if (res.data.code ==200){
               if (this.$route.query.type == 1){
                 this.$router.push({name:'agent'});
               }
               this.isReadonly = true;
+							this.isSave=false
             }else if (res.data.code == 500){
               this.isReadonly = false;
               this.openSimple = true;
@@ -116,56 +119,81 @@
         closeSimpleDialog () {
           this.openSimple = false;
         },
+				upload_img(param){
+					this.$ajax.post('/check-car/app/check/uploadCarPic',param,{timeout: 5000})
+						.then((res)=>{
+							if(res.data.code == 200){
+								// setTimeout("window.location.reload()",2000);
+								console.log(new Date())
+								this.loading = false;
+								this.form.plateNum = res.data.plate_num
+								this.form.vinId = res.data.vin
+								this.form.registerDate = res.data.register_date
+								this.form.use_character = res.data.use_character
+								this.headpic = "/static/images/模糊.jpg"
+								this.$toast.success('选择您的车辆类型');
+								this.isSave=true
+							}else if (res.data.code == 500) {
+								this.loading = false;
+								this.openSimple = true;
+								this.msg = res.data.msg;
+							}
+						}).catch(() => {
+							this.$toast.error('请求超时，刷新重试')
+							console.log('超时')
+							setTimeout("window.location.reload()",3000);
+						})
+				},
         update(e){
-          this.loading = true;
+// 					let ua = navigator.userAgent.toLowerCase() || window.navigator.userAgent.toLowerCase()
+// 					let isWX = /MicroMessenger/i.test(ua)
+// 					if(isWX){
+// 						this.msg='请点开右上角，从外部打开'
+// 						this.openSimple=true
+// 						return
+// 					}
+          this.$toast.info('5秒内若如结果，可刷新重试')
+					setTimeout(
+						window.location.reload()
+					, 5000);
           let file = e.target.files[0];
           let param = new window.FormData(); //创建form对象
           param.append('file',file);//通过append向form对象添加数据
-          this.$ajax.post('/check-car/app/check/uploadCarPic',param)
-            .then((res)=>{
-              if(res.data.code == 200){
-                this.isUploadImg=true;
-								this.refresh_img=false;
-								this.refresh_img=true;
-                this.$ajax.get("/check-car/app/check/user/getCarInfo")
-                  .then((res)=> {
-                    if (res.data.code ==200){
-                      // == 1 ? true:false
-                      // this.form.operateCar = res.data.carInfo.operateCar
-                      this.form.carType = res.data.carInfo.carType==5?'五座汽车':'七座汽车';
-                      this.form.plateNum = res.data.carInfo.plateNum;
-                      this.form.vinId = res.data.carInfo.vin;
-                      this.form.registerDate = res.data.carInfo.registerDate;
-                      this.headpic = 'http://129.204.110.142:8080/check-car/app/sms/showCarPic/'+res.data.carInfo.userId+'/'+res.data.carInfo.plateNum;
-                      this.operateCar = JSON.stringify(res.data.carInfo.operateCar);
-                      // this.isReadonly=true;
-                      this.isUploadImg=true;
-                    }else if (res.data.code == 500) {
-                      this.openSimple = true;
-                      this.msg = res.data.msg
-                    }
-                    this.loading = false;
-                  });
-							}else if (res.data.code == 500) {
-                this.loading = false;
-                this.openSimple = true;
-                this.msg = res.data.msg;
-              }
-            })
+					this.upload_img(param)
+					console.log(new Date())
+					this.loading = true;
+					setTimeout(function ok(){
+						if(this.loading == true){
+							this.upload_img(param)
+							this.$toast.error('请求超时，刷新重试')
+							window.location.reload()
+						}
+					}, 3000);
+					this.upload_img(param)
         }
       },
       created(){
         this.$ajax.get("/check-car/app/check/user/getCarInfo", {
         }).then((res)=> {
+					 let ua = navigator.userAgent.toLowerCase() || window.navigator.userAgent.toLowerCase();
+					 console.log(ua)
           if (res.data.code ==200){
+						console.log(res.data)
             this.isReadonly = true;
             this.form.carType = res.data.carInfo.carType==5?'五座汽车':'七座汽车';
             this.form.plateNum = res.data.carInfo.plateNum;
             this.form.vinId = res.data.carInfo.vin;
             this.form.registerDate = res.data.carInfo.registerDate;
-            this.headpic = 'http://129.204.110.142:8080/check-car/app/sms/showCarPic/'+res.data.carInfo.userId+'/'+res.data.carInfo.plateNum;
-            this.operateCar = JSON.stringify(res.data.carInfo.operateCar);
-          }
+						this.form.use_character = res.data.carInfo.useCharacter;
+						this.headpic = "/static/images/模糊.jpg"
+            // this.headpic = 'http://localhost:8080/check-car/app/sms/showCarPic/'+res.data.carInfo.userId+'/'+res.data.carInfo.plateNum;
+            // this.operateCar = JSON.stringify(res.data.carInfo.operateCar);
+						
+          }else if(res.data.code ==500){
+						console.log(res.data.msg)
+						// Toast.info('请先上传照片');
+						this.$toast.info(res.data.msg);
+					}
         });
       }
     }
@@ -193,11 +221,13 @@
   height: 100%;
 } */
 .nextBtn{
+	height: 100%;
   margin-left: 15px;
   width: 90%;
 }
 
 .editBtn{
+	height: 100%;
 	margin-bottom: 10px;
   margin-left: 30%;
   width: 40%;
