@@ -41,6 +41,9 @@
 				if (res.data.code == 200) {
 					console.log(res.data.data)
 					this.order_list = this.modifyState(res.data.data);
+				}else if(res.data.code ==401){
+						setTimeout(this.$router.push({name: 'login'}),3000);
+						this.$toast.info("登陆失效，请重新登陆");
 				}
 			});
 		},

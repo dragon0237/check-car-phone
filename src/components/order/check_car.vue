@@ -71,7 +71,9 @@
 					}).then((res)=>{
               if(res.data.code == 200) {
                 this.openSimple2=true
-              }
+              }else if(res.data.code ==401){
+								this.$toast.info("登陆失效，请重新登陆");
+							}
             })
         },
         //上传车外照片
@@ -93,7 +95,10 @@
 							if(res.data.code==200){
 								// 129.204.110.142
 								this.car_out_img = 'http://114.115.215.44:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/1';
-							}else if (res.data.code==500){
+							}else if(res.data.code ==401){
+								this.$toast.info("请重新登陆");
+							}
+							else if (res.data.code==500){
 								this.openSimple=true
 								this.msg=res.data.msg
 								this.car_out_img = 'http://114.115.215.44:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/1';
@@ -118,7 +123,10 @@
               console.log(res.data)
 							if(res.data.code==200){
 								this.car_in_img = 'http://114.115.215:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/2';
-							}else if (res.data.code==500){
+							}else if(res.data.code ==401){
+								this.$toast.info("请重新登陆");
+							}
+							else if (res.data.code==500){
 								this.openSimple=true
 								this.msg=res.data.msg
 								this.car_in_img = 'http://114.115.215:8080/check-car/app/showCarPic/'+res.data.userId+'/'+this.$route.query.orderId+'/2';

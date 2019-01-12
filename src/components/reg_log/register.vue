@@ -97,10 +97,12 @@
                 this.msg = '注册成功';
                 this.sign = true
 								let params = {};
-									params.expire = res.data.expire;
-									params.token = res.data.token;
-									params.date = new Date();
-								localStorage.clear();
+								params.expire = res.data.expire;
+								params.token = res.data.token;
+								params.date = new Date();
+								params.date = new Date().getTime();
+								params.isReload = false
+								// localStorage.clear();
 								localStorage.setItem('USER',JSON.stringify(params));
 
               }else{

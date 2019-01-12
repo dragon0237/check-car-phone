@@ -52,7 +52,13 @@
       },
       created() {
           let islogin = localStorage.getItem('USER');
+					
           this.state = islogin == undefined?true:false;
+					let nowdate = new Date()
+					if((nowdate.getTime() - islogin.date)/1000 > islogin.expire){
+						localStorage.clear()
+						this.state = false
+					}
       }
   }
 </script>

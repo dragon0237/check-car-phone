@@ -77,14 +77,29 @@
         }
       },
 			created(){
+				let userInfo = JSON.parse(localStorage.getItem('USER'));
+				if(!userInfo){
+					this.$router.push({name: 'login'})
+				}else{
+					let nowdate = new Date()
+					if((nowdate.getTime() - userInfo.date)/1000 > userInfo.expire){
+						localStorage.clear()
+						this.$router.push({name: 'login'})
+					}
+				}
+				
 				this.$ajax.get("/check-car/app/check/userInfo", {
 				}).then((res)=> {
+					console.log(res)
 					if (res.data.code ==200){
 						console.log(res)
 						console.log(res.data.data.username)
 						this.validateForm.username = res.data.data.username
 						this.validateForm.mobile = res.data.data.mobile
 						this.validateForm.password = '123456789'
+					}else if(res.data.code ==401){
+						// setTimeout(this.$router.push({name: 'login'}),3000);
+						this.$toast.info("登陆失效，请重新登陆");
 					}else{
 						this.isReadonly_name = false
 						this.isReadonly_mobile = false

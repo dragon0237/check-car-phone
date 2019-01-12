@@ -35,11 +35,13 @@ Axios.defaults.baseURL = 'http://114.115.215.44:8080';
 // Axios.defaults.baseURL = '/api';
 Vue.prototype.$ajax = Axios;
 
-
-
 let userInfo = JSON.parse(localStorage.getItem('USER'));
+
 if (userInfo) {
+	
   Axios.interceptors.request.use(config => {
+		console.log("interceptors")
+		
     let token = userInfo.token;
   if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
     config.headers.token = token;

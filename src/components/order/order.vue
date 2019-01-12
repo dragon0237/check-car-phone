@@ -80,7 +80,9 @@
           if (res.data.code == 200) {
 							
               this.order_list = res.data.data.orderEntity;
-          }else{
+          }else if(res.data.code ==401){
+						this.$toast.info("登陆失效，请重新登陆");
+					}else{
 						this.msg= res.data.msg
 						this.openSimple=false
 					}

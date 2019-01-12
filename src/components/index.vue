@@ -185,7 +185,21 @@
 				this.openSimple3=false
 				this.$router.push({name:'order_list'})
 			}
-    }
+    },created(){
+			// window.location.reload()
+			let userInfo = JSON.parse(localStorage.getItem('USER'));
+			if(!userInfo.isReload){
+				let params = {};  
+				params.expire = userInfo.expire;
+				params.token = userInfo.token;
+				params.date = userInfo.date;
+				params.isReload = true
+				localStorage.clear()
+				localStorage.setItem('USER',JSON.stringify(params));
+				
+				window.location.reload()
+			}
+		}
   }
 </script>
 

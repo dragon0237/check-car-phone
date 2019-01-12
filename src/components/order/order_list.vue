@@ -88,6 +88,9 @@
       this.$ajax.get("/check-car/app/check/userOrders?type=0", {}).then((res) => {
 				if(res.data.code == 500){
 					this.alert1=true
+				}else if(res.data.code ==401){
+						setTimeout(this.$router.push({name: 'login'}),3000);
+						this.$toast.info("登陆失效，请重新登陆");
 				}
         else if (res.data.code == 200) {
 					console.log(res.data)
@@ -122,7 +125,6 @@
 							case 10:
 								this.order_list.orderState = "订单修改，等待代理商确认";
 								break;
-							
 							default :
 								this.order_list.orderState = '未知'
 						}

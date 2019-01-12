@@ -120,6 +120,9 @@
           this.openSimple = false;
         },
 				upload_img(param){
+					console.log(param)
+					console.log(param.get('file'))
+					console.log("开始上传")
 					this.$ajax.post('/check-car/app/check/uploadCarPic',param,{timeout: 5000})
 						.then((res)=>{
 							if(res.data.code == 200){
@@ -137,13 +140,32 @@
 								this.loading = false;
 								this.openSimple = true;
 								this.msg = res.data.msg;
+							}else if(res.data.code ==401){
+								setTimeout(this.$router.push({name: 'login'}),3000);
+								this.$toast.info("登陆失效，请重新登陆");
 							}
 						}).catch(() => {
-							this.$toast.error('请求超时，刷新重试')
-							console.log('超时')
-							setTimeout("window.location.reload()",3000);
+							if(this.loading == false){
+								this.$toast.error('请求超时，刷新重试')
+								console.log('超时')
+								setTimeout("window.location.reload()",3000);
+							}
 						})
 				},
+// 				upload_img_ajax(param){
+// 					$.ajax({ url: "http://114.115.215.44:8080/check-car/app/check/uploadCarPic",
+// 						data: {"file": param.get('file')},
+// 						beforeSend: function(xhr){
+// 							xhr.setRequestHeader("token",JSON.parse(localStorage.getItem('USER')).token);
+// 						},
+// 						success: function(data){
+// 							this.loading = false;
+// 							this.$toast.success('选择您的车辆类型');
+// 							console.log(data)
+// 						},
+// 					});
+// 					
+// 				},
         update(e){
 // 					let ua = navigator.userAgent.toLowerCase() || window.navigator.userAgent.toLowerCase()
 // 					let isWX = /MicroMessenger/i.test(ua)
@@ -152,31 +174,33 @@
 // 						this.openSimple=true
 // 						return
 // 					}
+					console.log(new Date().getTime())
+					console.log(e)
           this.$toast.info('5秒内若如结果，可刷新重试')
-					setTimeout(
-						window.location.reload()
-					, 5000);
           let file = e.target.files[0];
           let param = new window.FormData(); //创建form对象
           param.append('file',file);//通过append向form对象添加数据
-					this.upload_img(param)
 					console.log(new Date())
 					this.loading = true;
-					setTimeout(function ok(){
-						if(this.loading == true){
-							this.upload_img(param)
-							this.$toast.error('请求超时，刷新重试')
-							window.location.reload()
-						}
-					}, 3000);
+					setTimeout(this.upload_img(param),2000)
 					this.upload_img(param)
         }
       },
       created(){
+				let userInfo = JSON.parse(localStorage.getItem('USER'));
+				if(!userInfo){
+					this.$router.push({name: 'login'})
+				}else{
+					let nowdate = new Date()
+					if((nowdate.getTime() - userInfo.date)/1000 > userInfo.expire){
+						localStorage.clear()
+						this.$router.push({name: 'login'})
+					}
+				}
+				
         this.$ajax.get("/check-car/app/check/user/getCarInfo", {
         }).then((res)=> {
-					 let ua = navigator.userAgent.toLowerCase() || window.navigator.userAgent.toLowerCase();
-					 console.log(ua)
+					 console.log(res)
           if (res.data.code ==200){
 						console.log(res.data)
             this.isReadonly = true;
@@ -189,7 +213,11 @@
             // this.headpic = 'http://localhost:8080/check-car/app/sms/showCarPic/'+res.data.carInfo.userId+'/'+res.data.carInfo.plateNum;
             // this.operateCar = JSON.stringify(res.data.carInfo.operateCar);
 						
-          }else if(res.data.code ==500){
+          }else if(res.data.code ==401){
+						// setTimeout(this.$router.push({name: 'login'}),3000);
+						this.$toast.info("登陆失效，请重新登陆");
+					}
+					else if(res.data.code ==500){
 						console.log(res.data.msg)
 						// Toast.info('请先上传照片');
 						this.$toast.info(res.data.msg);
