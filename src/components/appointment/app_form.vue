@@ -123,7 +123,7 @@
 					console.log(param)
 					console.log(param.get('file'))
 					console.log("开始上传")
-					this.$ajax.post('/check-car/app/check/uploadCarPic',param,{timeout: 5000})
+					this.$ajax.post('/check-car/app/check/uploadCarPic',param,{timeout: 3000})
 						.then((res)=>{
 							if(res.data.code == 200){
 								// setTimeout("window.location.reload()",2000);
@@ -141,14 +141,13 @@
 								this.openSimple = true;
 								this.msg = res.data.msg;
 							}else if(res.data.code ==401){
-								setTimeout(this.$router.push({name: 'login'}),3000);
+								setTimeout(this.$router.push({name: 'login'}),1000);
 								this.$toast.info("登陆失效，请重新登陆");
 							}
 						}).catch(() => {
 							if(this.loading == false){
 								this.$toast.error('请求超时，刷新重试')
 								console.log('超时')
-								setTimeout("window.location.reload()",3000);
 							}
 						})
 				},
@@ -182,6 +181,11 @@
           param.append('file',file);//通过append向form对象添加数据
 					console.log(new Date())
 					this.loading = true;
+					// 四秒后刷新
+					setTimeout(function refresh(){
+						window.location.reload()
+					},
+					4000)
 					setTimeout(this.upload_img(param),2000)
 					this.upload_img(param)
         }
@@ -198,7 +202,7 @@
 					}
 				}
 				
-        this.$ajax.get("/check-car/app/check/user/getCarInfo", {
+        this.$ajax.get	("/check-car/app/check/user/getCarInfo", {
         }).then((res)=> {
 					 console.log(res)
           if (res.data.code ==200){

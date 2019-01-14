@@ -23,10 +23,14 @@
 				{{msg}}
 				<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
 			</mu-dialog>
-			
+			<input type="text" v-show="false" v-model="alipay_url" />
 			<mu-dialog title="请将如下网址复制到浏览器打开" width="360" :open.sync="openSimple2">
 				{{alipay_url}}
-				<mu-button slot="actions" flat color="primary" @click="closeSimpleDialog">关闭</mu-button>
+				<mu-button slot="actions" flat color="primary"
+					v-clipboard:copy="alipay_url" 
+					v-clipboard:success="onCopy"
+					v-clipboard:error="onError">复制到剪切板</mu-button>
+				<mu-button slot="actions" flat @click="closeSimpleDialog">关闭</mu-button>
 			</mu-dialog>
       <foot-nav></foot-nav>
     </div>
@@ -64,8 +68,11 @@
 					}
 // 					window.open("http://114.115.215.44:8080"+"/check-car/app/alipay/goAlipay/"+this.order_list.orderId);
 // 					this.$router.push({name:'order_list'})
-        },
-        go_wxcharge(){
+        },onCopy(){
+					this.$toast.info("复制成功");
+				},onError(){
+					this.$toast.error("复制失败");
+				},go_wxcharge(){
           alert('敬请期待')
         },
 				closeSimpleDialog(){
